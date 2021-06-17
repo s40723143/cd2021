@@ -996,9 +996,71 @@ print(output)
 <p>逆向運動學函式 (20%)</p>
 <p>這邊影片有一個沒講到第37行:sim.setJointTargetPosition(jointz,-0.55)</p>
 <p>後面的-0.55就是控制下盤下吸的距離</p>
+<p>鍵盤控制:</p>
 <p><iframe allowfullscreen="allowfullscreen" height="314" src="//www.youtube.com/embed/PY7WjnXBehY" width="560"></iframe></p>
+<p>迴圈程式碼</p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">function moving(x,y)
+a=0.4
+b=0.4
+c=math.pow((math.pow(x,2)+math.pow(y,2)),0.5)
+s=(a+b+c)/2
+area=math.pow((s*(s-a)*(s-b)*(s-c)),0.5)
+h=area/(2*c)
+deg1_base=math.atan(x/y)
+if x&lt;0 and y&lt;0 then
+deg1_base=deg1_base+math.pi
+end
+deg1_tri=math.asin(h/a)
+deg1=deg1_base+deg1_tri
+deg2=math.pi-(0.5*math.pi-deg1_tri)-math.acos(h/b)
+deg3=deg2-deg1
+sim.setJointTargetPosition(joint01,deg1)
+sim.setJointTargetPosition(joint02,-deg2)
+sim.setJointTargetPosition(joint03,deg3)
+end
+
+
+function sysCall_threadmain()
+joint01=sim.getObjectHandle('joint1')
+joint02=sim.getObjectHandle('joint2')
+joint03=sim.getObjectHandle('joint3')
+jointz=sim.getObjectHandle('jointz')
+sim.setJointTargetPosition(joint01,0)
+sim.setJointTargetPosition(joint02,0)
+sim.setJointTargetPosition(joint03,0)
+sim.setJointTargetPosition(jointz,0)
+sim.setIntegerSignal("pad_switch",1)
+sim.setJointTargetPosition(jointz,-0.1)
+sim.wait(2)
+sim.setJointTargetPosition(jointz,0)
+sim.wait(6)
+while sim.getSimulationState()~=sim.simulation_advancing_abouttostopre do
+moving(0.2,0.7)
+sim.wait(2)
+sim.setIntegerSignal("pad_switch",0)
+sim.wait(2)
+sim.setIntegerSignal("pad_switch",1)
+sim.setJointTargetPosition(jointz,-0.1)
+sim.wait(2)
+sim.setJointTargetPosition(jointz,0)
+sim.wait(2)
+moving(-0.3,-0.55)
+sim.wait(2)
+sim.setIntegerSignal("pad_switch",0)
+sim.wait(2)
+sim.setIntegerSignal("pad_switch",1)
+sim.setJointTargetPosition(jointz,-0.1)
+sim.wait(2)
+sim.setJointTargetPosition(jointz,0)
+sim.wait(2)
+end
+end</pre>
+<p><br/><br/></p>
 <h2>Test4</h2>
 <p>Python remote API 逆向運動學函式 (20%)</p>
+<p>程式碼:</p>
+<p><img alt="" height="791" src="/images/1.PNG" width="520"/></p>
+<p><img alt="" height="547" src="/images/2.PNG" width="520"/></p>
 <p>google雲端連結</p>
 <p><a href="https://drive.google.com/file/d/1Pmf-uJYKQ_Kpm9xP8NHOlEcz0pdPhrfo/view?usp=sharing" rel="nofollow">https://drive.google.com/file/d/1Pmf-uJYKQ_Kpm9xP8NHOlEcz0pdPhrfo/view?usp=sharing</a></p>
 <p></p>
